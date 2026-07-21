@@ -1,18 +1,7 @@
 """
-可重現的鹿偵測示範 (無需 Roboflow API key)
-================================================
-用 Open Images V7 的「Deer」類別(含 bounding box)自動下載一小份真實鹿資料，
-轉成 YOLO 格式，微調 YOLOv8n，評估並視覺化。**本專案的成果圖就是用這支腳本產生的。**
-
-已在無 GPU 的環境實跑驗證：120 訓練 / 40 驗證張、CPU、10 epoch →
-  mAP50 ≈ 0.77, Recall ≈ 0.96 (見 ../results/openimages_metrics.md)
-
-用法:
-  pip install fiftyone ultralytics huggingface_hub
-  python run_openimages_demo.py --train 120 --val 40 --epochs 30 --imgsz 640 --device 0
-註:
-  - 有 GPU 時把 epochs 調高(如 50~100)、imgsz=640、device=0，信心分數會校準得更好。
-  - 預訓練權重若無法從 GitHub 下載(被防火牆擋)，可改從 HuggingFace 取得(見 get_weights())。
+可重現的鹿偵測示範，不需要 Roboflow API key。
+用 Open Images 的 Deer 類別（含框）下載真實鹿圖，轉成 YOLO 格式，微調 YOLOv8n。
+本專案的單類別成果就是這支跑出來的。有 GPU 時把 epochs 和 imgsz 調高。
 """
 import argparse, os, glob
 import fiftyone as fo, fiftyone.zoo as foz

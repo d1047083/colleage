@@ -1,12 +1,9 @@
 """
-FX 深化分析 (Deep dive)  —  超越「日頻近似隨機漫步」的結論
-=================================================================
-三個層次的深化：
-  A. GARCH(1,1) 波動度建模        — 方向難預測，但「波動度」可預測(有記憶)
-  B. 月頻 × 總經基本面預測         — 用央行利率/貨幣供給/外匯存底等預測次月台幣走勢
-  C. 交易回測 + 統計顯著性檢定     — 含交易成本 vs 買進持有；方向準確率的 binomial 檢定
-
-輸出: figures/deep_*.png, results/deep_metrics.md
+匯率的深入分析，接在 build.py 之後。分三塊：
+A. GARCH(1,1) 波動度，方向難猜但波動可以預測。
+B. 月頻加總經指標，預測隔月台幣走勢。
+C. 加交易成本的回測，還有方向準確率的統計檢定。
+輸出 figures/deep_*.png、results/deep_metrics.md。
 """
 import json, os, warnings
 import numpy as np, pandas as pd
@@ -140,33 +137,25 @@ def backtest_block(d,split,pred,yte):
             "strat_sharpe":sr(strat),"bh_sharpe":sr(bh)}
 
 def report(g,m,b):
-    L=["# FX — Deep-dive Results\n",
-    "## A. GARCH(1,1) volatility\n",
-    f"- Persistence α+β = **{g['persistence']:.3f}** (close to 1 → strong volatility clustering / long memory)",
-    f"- 1-day-ahead vol forecast vs realized |return| correlation = **{g['vol_forecast_corr']:.3f}**",
-    "- 解讀：方向不可預測，但**波動度可預測**——這正是選擇權定價與風險管理的基礎。\n",
-    "## B. Monthly macro model\n",
-    f"- Random-walk RMSE **{m['rw_rmse']:.4f}** vs RandomForest RMSE **{m['rf_rmse']:.4f}**",
-    f"- Directional accuracy **{m['dir_acc']*100:.1f}%** ({m['dir_k']}/{m['dir_n']}), "
-    f"binomial test vs 50% p = **{m['binom_p']:.3f}**",
-    f"- Most important feature: **{m['top_feat']}** (importance {m['top_feat_imp']:.2f})",
-    ("- 解讀：月頻加入總經基本面後，方向準確率" +
-     ("**在統計上顯著優於擲硬幣**(p<0.05)，顯示基本面確有邊際資訊。" if m['binom_p']<0.05
-      else "略高於50%但**未達統計顯著**——如實呈現，避免過度宣稱。")),
-    "- **前視偏誤檢查**：月頻總經數據隔月才公布，故將基本面特徵延遲一個月(MACRO_LAG=1)後重跑；"
-    "優勢仍存在(天真版與修正版差異極小)，代表結果不是單純偷看未來造成的。",
-    "- **仍需保留的疑慮**(誠實)：67% 的月方向準確率明顯高於 FX 文獻常見的 55–58%，"
-    "且此處僅用單一 70/30 切分。要確認這個訊號為真，下一步應做**擴張窗 walk-forward**、"
-    "多幣別/多期間穩健性測試，並排查外匯存底等變數的殘留同步性。在那之前，把它當『值得深究的訊號』"
-    "而非『已驗證的獲利策略』。",
-    "\n## C. Trading backtest (out-of-sample, 0.1% cost)\n",
-    f"- Strategy total return **{b['strat_total']*100:.1f}%** (Sharpe {b['strat_sharpe']:.2f})",
-    f"- Buy&hold USD **{b['bh_total']*100:.1f}%** (Sharpe {b['bh_sharpe']:.2f})",
-    "- 解讀：回測含交易成本並用樣本外資料，避免前視偏誤；Sharpe 才是公平比較基準。\n",
-    "## 這次深化把專案從『baseline』推進到『研究等級』的關鍵\n",
-    "1. 從『日頻近似隨機漫步』延伸到**月頻總經預測**，問對了問題。\n"
-    "2. 用 **GARCH** 展示『波動度可預測』這個 FX 中最實用的可預測性。\n"
-    "3. 用 **binomial / Sharpe / 樣本外回測** 做統計嚴謹的評估，而非只看 RMSE。\n"]
+    L=["# 匯率深入分析\n",
+    "## A. GARCH(1,1) 波動度\n",
+    f"持續性 α+β = {g['persistence']:.3f}，接近 1，代表波動有明顯的聚集和記憶性。"
+    f"隔天波動度的預測值和實際 |報酬| 的相關是 {g['vol_forecast_corr']:.3f}。"
+    "方向雖然猜不準，但波動度是可以預測的，這也是選擇權定價和風險管理的基礎。\n",
+    "## B. 月頻總經模型\n",
+    f"隨機漫步 RMSE {m['rw_rmse']:.4f}，RandomForest RMSE {m['rf_rmse']:.4f}。"
+    f"方向準確率 {m['dir_acc']*100:.1f}%（{m['dir_k']}/{m['dir_n']}），跟 50% 做 binomial 檢定 p 值 {m['binom_p']:.3f}。"
+    f"最重要的特徵是 {m['top_feat']}（重要度 {m['top_feat_imp']:.2f}）。",
+    ("加進總經指標之後，方向準確率在統計上明顯比丟硬幣好，代表基本面確實帶了一點資訊。"
+     if m['binom_p']<0.05 else "方向準確率略高於 50%，但還沒到統計顯著，照實寫、不多宣稱。"),
+    "月頻總經數據是隔月才公布的，所以把這些特徵延後一個月再跑一次（MACRO_LAG=1），優勢還在，"
+    "跟不延後的版本幾乎沒差，表示不是偷看未來造成的。",
+    "還是留個保守態度：這個數字比匯率文獻常見的 55–58% 高不少，而且只用了單一的 70/30 切分。"
+    "要確認它是真的，接下來得做擴張窗 walk-forward、換幣別和不同期間試試。在那之前，先當成值得再追的訊號。\n",
+    "## C. 交易回測（樣本外，0.1% 成本）\n",
+    f"策略總報酬 {b['strat_total']*100:.1f}%（Sharpe {b['strat_sharpe']:.2f}），"
+    f"買美元持有 {b['bh_total']*100:.1f}%（Sharpe {b['bh_sharpe']:.2f}）。"
+    "回測有算交易成本、用樣本外資料，比較看 Sharpe 才公平。\n"]
     open(f"{RES}/deep_metrics.md","w",encoding="utf-8").write("\n".join(L))
     print("\n".join(L))
 

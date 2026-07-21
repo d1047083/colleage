@@ -1,13 +1,7 @@
 """
-香蕉「好 / 壞」影像分類 — 遷移學習升級版 (MobileNetV2)
-原作業有 good banana / bad banana 影像，本檔用預訓練模型做正規的二元分類，
-含資料增強、驗證集、早停、混淆矩陣與 Grad-CAM 可解釋性(選配)。
-
-資料結構 (ImageFolder 慣例):
-    data/
-      good/ *.jpg
-      bad/  *.jpg
-用法: python train.py --data ../data --epochs 15
+香蕉好壞分類，用 MobileNetV2 遷移學習。
+資料照 ImageFolder 慣例放，data/ 底下有 good/ 和 bad/ 兩個資料夾。
+含資料增強、驗證集、早停、混淆矩陣。
 """
 import os, argparse
 import numpy as np

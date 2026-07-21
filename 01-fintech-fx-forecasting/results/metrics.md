@@ -1,23 +1,17 @@
-# FX Forecasting — Results
+# 匯率預測結果
 
-- Data: TWCB daily FX, 1993-01-05 → 2022-03-31, 7,278 rows, 18 currencies
+資料是央行每日匯率，1993-01-05 到 2022-03-31，7278 筆，18 種貨幣。任務是預測隔天的美元對台幣，用時間序的 70/30 切分（測試從 2013-06-18 開始）。
 
-- Task: predict next-day USD/TWD; chronological 70/30 split (test starts 2013-06-18)
-
-
-| Model | Test RMSE | Test MAE | Directional Acc |
+| 模型 | 測試 RMSE | 測試 MAE | 方向準確率 |
 |---|---|---|---|
-| RandomWalk | 0.0666 | 0.0459 | 46.6% |
+| 隨機漫步 | 0.0666 | 0.0459 | 46.6% |
 | Ridge | 0.0668 | 0.0462 | 47.8% |
-| GradientBoosting | 0.0676 | 0.0473 | 48.0% |
+| Gradient Boosting | 0.0676 | 0.0473 | 48.0% |
 
-## Honest reading of the results
+## 怎麼看這個結果
 
-The random-walk baseline is extremely hard to beat: exchange rates are close to a martingale, so 'tomorrow ≈ today' already gives a very low RMSE. Here the best RMSE model is **RandomWalk**, and directional accuracy for every model sits near 50% — i.e. predicting the *direction* of the next day's move is barely better than a coin flip. This is the correct, well-documented finding in FX research, and stating it honestly (rather than claiming a magic predictor) is exactly what a graduate admissions committee or a serious quant reader wants to see.
+隨機漫步這個基準很難贏。匯率接近 martingale，「隔天約等於今天」就已經給出很低的 RMSE。這裡 RMSE 最低的就是隨機漫步，各模型猜方向的比例都在 50% 附近，也就是猜隔天漲跌跟丟硬幣差不多。這在匯率研究裡是很常見的結論，照實寫出來比硬做一個看起來會賺的預測器好。
 
+## 下一步能往哪找優勢
 
-## Where real edge could come from (next steps)
-- Longer horizons / weekly returns, where some predictability exists
-- Macro features from the other 170+ TWCB series (rates, money supply, reserves)
-- Volatility modelling (GARCH) — vol IS forecastable even when direction is not
-- A proper trading backtest with transaction costs, not just RMSE
+拉長預測區間，例如週報酬，那邊比較有跡可循。用央行另外 170 多條總經序列（利率、貨幣供給、外匯存底）當特徵。改做波動度預測，方向難猜但波動可以預測。做一個把交易成本算進去的回測，而不是只看 RMSE。

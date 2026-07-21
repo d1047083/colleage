@@ -1,11 +1,7 @@
 """
-FinTech FX Forecasting — build pipeline
-央行 (TWCB) 每日匯率：資料萃取 + EDA + 匯率預測實驗
-
-輸入 : download_TWCB.json  (中央銀行統計資料庫匯出)
-輸出 : data/fx_daily.csv, figures/*.png, results/metrics.md
-
-作者慣例：所有圖表用英文標籤避免字型缺字；分析結論誠實呈現(FX 近似隨機漫步)。
+匯率分析主流程：從央行匯出的 json 解析出每日匯率，做 EDA 和隔天匯率的預測。
+輸出 data/fx_daily.csv、figures/、results/metrics.md。
+圖表都用英文標籤避免字型缺字；結果照實寫，日頻匯率其實接近隨機漫步。
 """
 import json, os, sys
 import numpy as np
@@ -158,29 +154,22 @@ def evaluate(df):
 
 def write_report(df_fx, results, test_start):
     lines = []
-    lines.append("# FX Forecasting — Results\n")
-    lines.append(f"- Data: TWCB daily FX, {df_fx.index.min().date()} → {df_fx.index.max().date()}, "
-                 f"{len(df_fx):,} rows, {df_fx.shape[1]} currencies\n")
-    lines.append(f"- Task: predict next-day USD/TWD; chronological 70/30 split "
-                 f"(test starts {pd.Timestamp(test_start).date()})\n")
-    lines.append("\n| Model | Test RMSE | Test MAE | Directional Acc |\n|---|---|---|---|")
+    lines.append("# 匯率預測結果\n")
+    lines.append(f"資料是央行每日匯率，{df_fx.index.min().date()} 到 {df_fx.index.max().date()}，"
+                 f"{len(df_fx):,} 筆，{df_fx.shape[1]} 種貨幣。任務是預測隔天的美元對台幣，"
+                 f"用時間序的 70/30 切分（測試從 {pd.Timestamp(test_start).date()} 開始）。\n")
+    lines.append("| 模型 | 測試 RMSE | 測試 MAE | 方向準確率 |\n|---|---|---|---|")
     for n,r in results.items():
         lines.append(f"| {n} | {r['rmse']:.4f} | {r['mae']:.4f} | {r['dir_acc']*100:.1f}% |")
     best_rmse = min(results, key=lambda k: results[k]["rmse"])
-    lines.append("\n## Honest reading of the results\n")
+    lines.append("\n## 怎麼看這個結果\n")
     lines.append(
-        f"The random-walk baseline is extremely hard to beat: exchange rates are close to a "
-        f"martingale, so 'tomorrow ≈ today' already gives a very low RMSE. Here the best RMSE "
-        f"model is **{best_rmse}**, and directional accuracy for every model sits near 50% — i.e. "
-        f"predicting the *direction* of the next day's move is barely better than a coin flip. "
-        f"This is the correct, well-documented finding in FX research, and stating it honestly "
-        f"(rather than claiming a magic predictor) is exactly what a graduate admissions committee "
-        f"or a serious quant reader wants to see.\n")
-    lines.append("\n## Where real edge could come from (next steps)\n"
-        "- Longer horizons / weekly returns, where some predictability exists\n"
-        "- Macro features from the other 170+ TWCB series (rates, money supply, reserves)\n"
-        "- Volatility modelling (GARCH) — vol IS forecastable even when direction is not\n"
-        "- A proper trading backtest with transaction costs, not just RMSE\n")
+        f"隨機漫步這個基準很難贏。匯率接近 martingale，「隔天約等於今天」就已經給出很低的 RMSE。"
+        f"這裡 RMSE 最低的是 {best_rmse}，各模型猜方向的比例都在 50% 附近，猜隔天漲跌跟丟硬幣差不多。"
+        f"這在匯率研究裡是很常見的結論，照實寫出來比硬做一個看起來會賺的預測器好。\n")
+    lines.append("\n## 下一步能往哪找優勢\n"
+        "拉長預測區間，例如週報酬。用央行另外 170 多條總經序列當特徵。"
+        "改做波動度預測，方向難猜但波動可以預測。做一個把交易成本算進去的回測。\n")
     open(os.path.join(RES,"metrics.md"),"w",encoding="utf-8").write("\n".join(lines))
     print("\n".join(lines))
 

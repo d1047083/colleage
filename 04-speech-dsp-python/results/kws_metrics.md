@@ -1,9 +1,5 @@
-# Keyword spotting — MFCC + DTW
+# 關鍵詞辨識（MFCC + DTW）
 
-- 詞庫(真實 wav): jarvus, hello3, bug, bath, star, happy, tiger
-- 每詞取能量最高的 1.5s 核心片段為模板；測試查詢 = 3 SNR × 3 變速 = 9 種/詞
-- **Top-1 辨識準確率 = 95.2%** (共 63 次查詢)
+詞庫用的是真實錄音：jarvus、hello3、bug、bath、star、happy、tiger。每個詞取能量最高的 1.5 秒當模板，測試查詢是 3 種 SNR × 3 種變速，每詞 9 種，一共 63 次。Top-1 準確率 95.2%。
 
-## 解讀
-MFCC 捕捉音色包絡、DTW 容忍語速伸縮，因此在加噪與變速下仍能辨識——這是 one-shot(每詞僅一模板)的作法，適合資料稀少情境。
-延伸：資料變多時可改用 CNN/RNN 端到端關鍵詞偵測(如 Google Speech Commands)。
+MFCC 抓的是音色的包絡，DTW 能容忍語速伸縮，所以加了雜訊和變速還是認得出來。這是每個詞只有一個模板的做法，適合資料很少的情況。資料多了之後可以換成 CNN/RNN 的端到端關鍵詞偵測。

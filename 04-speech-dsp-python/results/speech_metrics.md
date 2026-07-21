@@ -1,19 +1,11 @@
-# Speech — Deep-dive Results
+# 語音分析結果
 
-- Audio: real wavs `star.wav`, `happy.wav` @ 16000 Hz
+錄音用的是真實的 star.wav 和 happy.wav，16000 Hz。
 
-## A. MFCC / Mel-spectrogram
+MFCC 和梅爾頻譜：抽出 13 維 MFCC，形狀 (13, 626)，這是語音辨識和關鍵詞偵測常用的前端特徵。
 
-- Extracted 13-dim MFCC, shape (13, 626) (frames × coeff) — the standard front-end for ASR/keyword spotting.
+基頻（pyin）：有聲的幀佔 98.4%，中位基頻大約 263 Hz。
 
-## B. Fundamental frequency (pyin)
+ICA 盲訊號分離：把兩段人聲混進兩支麥克風，再用 FastICA 拆開，還原和原始訊號的相關都是 1.00。拆開後的音檔在 results/ica_recovered_*.wav，可以直接聽出兩個人的聲音被分開了。
 
-- Voiced frames: 98.4% · median f0 ≈ **263 Hz**
-
-## C. ICA blind source separation (cocktail party)
-
-- Mixed two real voices into 2 mics, then FastICA unmixed them.
-- Recovery correlation with originals: **1.00**, **1.00** (1.0 = perfect).
-- 分離後的音檔存在 results/ica_recovered_*.wav，可直接聽出兩人聲音被拆開。
-
-延伸：MFCC 接一個小分類器即可做關鍵詞辨識；ICA 可延伸到多麥克風陣列與去噪。
+再往下，MFCC 接一個小分類器就能做關鍵詞辨識，ICA 也可以延伸到多麥克風陣列和去噪。

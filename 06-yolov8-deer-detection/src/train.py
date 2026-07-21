@@ -1,17 +1,6 @@
 """
-YOLOv8 鹿種偵測 — 訓練腳本
-============================
-在有 GPU 的機器(或 Colab)上訓練。資料需為 YOLO 偵測格式：
-  dataset/
-    images/{train,val}/*.jpg
-    labels/{train,val}/*.txt        # 每行: class cx cy w h (皆為 0~1 正規化)
-    data.yaml                        # 見同目錄 dataset/data.yaml 範本
-
-用法:
-  python train.py --data ../dataset/data.yaml --model yolov8n.pt --epochs 100 --imgsz 640
-說明:
-  - 首次會自動下載預訓練權重(yolov8n/s/m.pt)，需可連網(此雲端沙箱被擋，故在你本機/Colab 跑)。
-  - CPU 也能跑但很慢；建議 device=0 使用 GPU。
+YOLOv8 鹿偵測的訓練腳本，在有 GPU 的機器或 Colab 上跑。
+資料是 YOLO 偵測格式，見 dataset/data.yaml。第一次會自動下載預訓練權重，需要連網。
 """
 import argparse
 from ultralytics import YOLO

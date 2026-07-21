@@ -1,10 +1,5 @@
-# Autonomous — OpenDRIVE parse
+# OpenDRIVE 解析
 
-- File: `test.xodr`
-- Roads: **138** · Junctions: **10** · Driving lanes: **167**
-- Total road length: **4,634 m** (4.63 km)
-- Geometry reconstructed from line/arc primitives by integrating (x0,y0,hdg,curvature).
+檔案 test.xodr。解析出 138 條路、10 個路口、167 條行車道，總長 4634 公尺（4.63 公里）。道路的幾何是從直線和圓弧兩種基本型，用起點座標、朝向和曲率積分還原出來的。
 
-道路地圖輸出於 figures/deep_road_network.png(紅=路口路段)。
-
-延伸：有了參考線與車道資訊，即可放置車輛+相機、接專案02的視覺模型做車道偵測。
+道路網的圖在 figures/deep_road_network.png（紅色是路口的路段）。有了參考線和車道資訊，之後就可以放車輛加相機，接專案 02 的視覺模型做車道偵測。

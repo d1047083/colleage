@@ -1,12 +1,7 @@
 """
-下載鹿類偵測資料集 (Roboflow)
-=================================
-1. 免費註冊 https://roboflow.com 取得 API key(Settings → API)。
-2. 在 https://universe.roboflow.com 搜尋 "deer" 選一個偵測資料集。
-   注意：多數公開 deer 資料集是「單類別(deer)」；若要真正的「鹿種(species)」，
-   需找 species 標註的資料集，或自行標註(見 README)。
-3. 填入下方 workspace/project/version 與你的 API key 後執行。
-用法: python download_dataset.py
+從 Roboflow 下載鹿的偵測資料集。
+先到 roboflow.com 免費註冊拿 API key，再填下面的 workspace/project/version。
+公開的 deer 資料集多半是單類別，要分品種得找有物種標註的，或自己標。
 """
 import os
 from roboflow import Roboflow

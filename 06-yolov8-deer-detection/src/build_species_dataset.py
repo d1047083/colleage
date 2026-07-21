@@ -1,16 +1,7 @@
 """
-建立「多鹿種」偵測資料集 (可重現、可擴充)
-=================================================
-流程：從 iNaturalist 下載各鹿種真實照片 → 用通用鹿偵測器自動框出鹿身 →
-      標上品種類別 → 輸出 YOLO 偵測資料集。
-
-這就是本專案 species_data/ 的產生方式。你可以改 SPECIES、加大 PER_SPECIES
-來擴充資料(每種抓 200+ 張、人工校正框後，模型會好很多)。
-
-用法:
-  pip install ultralytics fiftyone huggingface_hub    # fiftyone 非必須(此腳本用 iNat API)
-  python build_species_dataset.py --per 60 --out species_data
-需要 weights/generic_deer_detector.pt (本專案已附)；沒有時可用 yolov8n.pt 但框較不準。
+建多鹿種的偵測資料集，可以重跑也可以擴充。
+從 iNaturalist 下載各鹿種的照片，用通用鹿偵測器自動框出鹿身，標上品種，輸出 YOLO 格式。
+species_data/ 就是這支產生的。改 SPECIES 和 --per 可以換品種或加量。
 """
 import argparse, os, json, ssl, glob, shutil, random, urllib.request, urllib.parse
 

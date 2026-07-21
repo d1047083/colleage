@@ -1,9 +1,6 @@
 """
-U-Net 影像去模糊模型 (Keras) — 深度學習升級版骨架
-在成對的 (blur, sharp) 影像上訓練，學習「模糊 -> 清晰」的還原映射。
-資料集: GOPRO_Large / 你的 final/blur + final/sharp
-
-註: 需要 GPU 與成對且對齊的資料。本檔為可訓練的完整骨架。
+U-Net 去模糊模型（Keras）。在成對的模糊/清晰圖上訓練，學把模糊還原成清晰。
+資料用 GOPRO_Large 或你自己的 blur/sharp。需要 GPU 和對齊好的成對資料。
 """
 import os, glob
 import numpy as np

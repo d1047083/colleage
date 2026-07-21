@@ -1,13 +1,8 @@
 """
-OpenDRIVE (.xodr) 解析與視覺化  —  自駕專案深化
-=====================================================
-RoadRunner 匯出的道路是 OpenDRIVE 標準(XML)。本檔用 Python 從零解析：
-  - 讀取每條 road 的 planView 幾何(直線 line / 圓弧 arc)
-  - 由 (x0,y0,hdg,length,曲率) 積分重建道路參考線座標
-  - 統計道路數、車道數、路口數、總里程，並繪製整張道路地圖
-
-這證明對自駕地圖格式(OpenDRIVE)的底層理解——不是只在 GUI 拉一拉。
-用法: python opendrive_parser.py <path/to/file.xodr>
+解析 RoadRunner 匯出的 OpenDRIVE(.xodr)，把道路網畫出來。
+從每條路的直線和圓弧幾何，用起點座標、朝向、曲率積分還原座標，
+再統計道路數、車道數、路口數和總長。
+用法：python opendrive_parser.py <file.xodr>。
 """
 import sys, os, math
 import numpy as np
@@ -72,12 +67,11 @@ if __name__=="__main__":
     roads,juncs,total_len,lanes,segs=parse(path)
     out=os.path.join(FIG,"deep_road_network.png")
     plot(segs,out,f"OpenDRIVE road network — {len(roads)} roads, {len(juncs)} junctions")
-    md=[f"# Autonomous — OpenDRIVE parse\n",
-        f"- File: `{os.path.basename(path)}`",
-        f"- Roads: **{len(roads)}** · Junctions: **{len(juncs)}** · Driving lanes: **{lanes}**",
-        f"- Total road length: **{total_len:,.0f} m** ({total_len/1000:.2f} km)",
-        f"- Geometry reconstructed from line/arc primitives by integrating (x0,y0,hdg,curvature).",
-        f"\n道路地圖輸出於 figures/deep_road_network.png(紅=路口路段)。\n",
-        "延伸：有了參考線與車道資訊，即可放置車輛+相機、接專案02的視覺模型做車道偵測。\n"]
+    md=[f"# OpenDRIVE 解析\n",
+        f"檔案 {os.path.basename(path)}。解析出 {len(roads)} 條路、{len(juncs)} 個路口、{lanes} 條行車道，"
+        f"總長 {total_len:,.0f} 公尺（{total_len/1000:.2f} 公里）。"
+        "道路的幾何是從直線和圓弧兩種基本型，用起點座標、朝向、曲率積分還原出來的。\n",
+        "道路網的圖在 figures/deep_road_network.png（紅色是路口的路段）。"
+        "有了參考線和車道資訊，之後就可以放車輛加相機，接專案 02 的視覺模型做車道偵測。\n"]
     open(os.path.join(RES,"road_metrics.md"),"w",encoding="utf-8").write("\n".join(md))
     print("\n".join(md)); print("saved ->",out)

@@ -1,8 +1,6 @@
 """
-YOLOv8 鹿種偵測 — 推論/視覺化
-用訓練好的權重對新影像做偵測，輸出畫框結果。
-用法:
-  python predict.py --weights runs/detect/deer_yolov8n/weights/best.pt --source path/to/imgs --conf 0.25
+用訓練好的權重對新圖偵測、畫框。
+用法：python predict.py --weights best.pt --source 圖片或資料夾 --conf 0.25
 """
 import argparse, os
 from ultralytics import YOLO

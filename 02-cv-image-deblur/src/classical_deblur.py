@@ -1,13 +1,8 @@
 """
-Classical image deblurring / sharpening — 可直接執行的基準方法
-(原作業把影像做成「模糊 vs 清晰」二元分類，其實框架有誤；真正該做的是「還原」。)
-
-本檔提供不需訓練即可跑的傳統去模糊基準，作為深度學習模型的對照組:
-  - Unsharp masking (非銳化遮罩)
-  - Richardson–Lucy 反卷積 (假設高斯模糊核)
-
-用法:
-    python classical_deblur.py <input_image>   # 不給則自動合成模糊測試圖
+不用訓練就能跑的傳統去模糊，當深度學習模型的對照組。
+原本的作業把圖分成模糊和清晰兩類，方向其實錯了，該做的是還原。
+含 Unsharp 和 Richardson-Lucy。
+用法：python classical_deblur.py <input_image>，不給圖就用內建的合成模糊圖。
 """
 import sys, os
 import numpy as np

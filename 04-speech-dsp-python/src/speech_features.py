@@ -1,11 +1,6 @@
 """
-Speech DSP in Python  — 由 MATLAB (zcr.m / f0.m / week5.m) 移植
-計算並繪製語音的：短時能量(Short-time Energy)、零交越率(ZCR)、頻譜圖(Spectrogram)。
-可用於「語音/靜音偵測(VAD)」的基礎。
-
-用法:
-    python speech_features.py <path/to/audio.wav>
-    # 不給檔案時會自動合成一段測試訊號並執行
+把 MATLAB 的短時能量、ZCR、頻譜移植成 Python，順便做簡單的語音/靜音偵測。
+用法：python speech_features.py <audio.wav>，不給檔案就用合成訊號。
 """
 import sys, os
 import numpy as np

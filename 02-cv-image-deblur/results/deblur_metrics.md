@@ -1,14 +1,12 @@
-# Deblurring — quantitative benchmark
+# 去模糊的量化比較
 
-施加已知高斯模糊(σ=3)+高斯雜訊(σ=0.01)後還原，對照原圖計算 PSNR/SSIM：
+對圖施加已知的高斯模糊（σ=3）加高斯雜訊（σ=0.01），再用傳統方法還原，跟原圖算 PSNR/SSIM。
 
-| Method | PSNR (dB) | SSIM |
+| 方法 | PSNR (dB) | SSIM |
 |---|---|---|
-| Degraded (blur+noise) | 23.84 | 0.739 |
+| 退化圖(模糊+雜訊) | 23.84 | 0.739 |
 | Wiener | 23.36 | 0.721 |
 | Richardson-Lucy | 19.72 | 0.764 |
 | Unsharp | 24.56 | 0.654 |
 
-- 最佳傳統法：**Unsharp** (PSNR 24.56 dB)。
-- 這就是深度學習模型必須超越的基準線；U-Net 訓練程式見 src/unet_deblur.py。
-- 評估用 PSNR(數值保真)與 SSIM(結構相似)雙指標，比只看肉眼更客觀。
+傳統法裡 Unsharp 的 PSNR 最高（24.56 dB）。這條就是之後深度學習模型要超過的基準，U-Net 的訓練程式在 src/unet_deblur.py。評估同時看 PSNR（數值上的保真）和 SSIM（結構上的相似），比只用肉眼看客觀。值得注意的是有雜訊時傳統法的改善其實有限，這也說明了為什麼需要換更強的模型。

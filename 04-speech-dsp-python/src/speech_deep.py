@@ -1,12 +1,9 @@
 """
-語音深化 (Deep dive) — 用真實 wav
-=========================================
-A. MFCC 特徵 + Mel 頻譜圖       (語音辨識的標準前端)
-B. 基頻 f0 追蹤 (pyin)          (音高/語調分析)
-C. ICA 盲訊號分離 (雞尾酒會)     (把兩段混在一起的語音分離出來)
-
-輸入: 兩段 16kHz 單聲道語音 (預設 star.wav / happy.wav)
-輸出: figures/deep_speech_*.png, results/*.wav(分離結果), results/speech_metrics.md
+用真實錄音做的幾件事：
+A. MFCC 和梅爾頻譜。
+B. 基頻追蹤（pyin）。
+C. ICA 盲訊號分離，把兩段混在一起的人聲拆開。
+輸出圖和分離後的音檔。
 """
 import os, sys
 import numpy as np
@@ -84,16 +81,12 @@ if __name__=="__main__":
     print("A. MFCC ..."); sh=mfcc_block(s2,os.path.basename(b))
     print("B. f0 ...");  f0=f0_block(s2,os.path.basename(b))
     print("C. ICA ...");  corrs=ica_block(s1,s2)
-    lines=["# Speech — Deep-dive Results\n",
-      f"- Audio: real wavs `{os.path.basename(a)}`, `{os.path.basename(b)}` @ {SR} Hz\n",
-      "## A. MFCC / Mel-spectrogram\n",
-      f"- Extracted 13-dim MFCC, shape {sh} (frames × coeff) — the standard front-end for ASR/keyword spotting.\n",
-      "## B. Fundamental frequency (pyin)\n",
-      f"- Voiced frames: {f0['voiced_frac']*100:.1f}% · median f0 ≈ **{f0['median_f0']:.0f} Hz**\n",
-      "## C. ICA blind source separation (cocktail party)\n",
-      f"- Mixed two real voices into 2 mics, then FastICA unmixed them.",
-      f"- Recovery correlation with originals: **{corrs[0]:.2f}**, **{corrs[1]:.2f}** (1.0 = perfect).",
-      "- 分離後的音檔存在 results/ica_recovered_*.wav，可直接聽出兩人聲音被拆開。",
-      "\n延伸：MFCC 接一個小分類器即可做關鍵詞辨識；ICA 可延伸到多麥克風陣列與去噪。\n"]
+    lines=["# 語音分析結果\n",
+      f"錄音用的是真實的 {os.path.basename(a)} 和 {os.path.basename(b)}，{SR} Hz。\n",
+      f"MFCC 和梅爾頻譜：抽出 13 維 MFCC，形狀 {sh}，這是語音辨識和關鍵詞偵測常用的前端特徵。\n",
+      f"基頻（pyin）：有聲的幀佔 {f0['voiced_frac']*100:.1f}%，中位基頻大約 {f0['median_f0']:.0f} Hz。\n",
+      f"ICA 盲訊號分離：把兩段人聲混進兩支麥克風，再用 FastICA 拆開，還原和原始訊號的相關是 {corrs[0]:.2f} 和 {corrs[1]:.2f}。"
+      "拆開後的音檔在 results/ica_recovered_*.wav，可以直接聽出兩個人的聲音被分開了。\n",
+      "再往下，MFCC 接一個小分類器就能做關鍵詞辨識，ICA 也可以延伸到多麥克風陣列和去噪。\n"]
     open(f"{RES}/speech_metrics.md","w",encoding="utf-8").write("\n".join(lines))
     print("\n".join(lines))

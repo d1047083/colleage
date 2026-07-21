@@ -1,9 +1,6 @@
 """
-去模糊量化評估 (Deblurring benchmark)  —  電腦視覺深化
-==========================================================
-不需訓練即可產出真實數字：對清晰影像施加「已知的高斯模糊+雜訊」造成退化，
-再用多種傳統方法還原，並以 PSNR / SSIM 客觀衡量還原品質。
-這建立了深度學習模型(U-Net/DeblurGAN)要超越的『傳統基準線』。
+去模糊的量化比較。對清晰圖施加已知的模糊加雜訊，再用傳統法還原，算 PSNR/SSIM。
+這條就是深度學習模型要超過的基準，不用訓練就能跑出數字。
 """
 import os
 import numpy as np
@@ -55,9 +52,8 @@ def main():
     for name,(p,s) in metrics.items():
         L.append(f"| {name} | {p:.2f} | {s:.3f} |")
     best=max((k for k in metrics if k!="Degraded (blur+noise)"),key=lambda k:metrics[k][0])
-    L+=["",f"- 最佳傳統法：**{best}** (PSNR {metrics[best][0]:.2f} dB)。",
-        "- 這就是深度學習模型必須超越的基準線；U-Net 訓練程式見 src/unet_deblur.py。",
-        "- 評估用 PSNR(數值保真)與 SSIM(結構相似)雙指標，比只看肉眼更客觀。\n"]
+    L+=["",f"傳統法裡 {best} 的 PSNR 最高（{metrics[best][0]:.2f} dB）。這條就是之後深度學習模型要超過的基準，"
+        "U-Net 的訓練程式在 src/unet_deblur.py。評估同時看 PSNR 和 SSIM，比只用肉眼看客觀。\n"]
     open(f"{RES}/deblur_metrics.md","w",encoding="utf-8").write("\n".join(L))
     print("\n".join(L))
 

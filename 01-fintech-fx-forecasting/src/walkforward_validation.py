@@ -1,11 +1,7 @@
 """
-月頻總經模型 — 擴張窗 walk-forward 驗證
-===============================================
-上一步(單一70/30切分)得到方向準確率~67%，好得可疑。這裡用更嚴謹的
-「擴張窗 walk-forward、逐月一步預測」重新評估——這是時間序預測的黃金標準。
-每一步只用『當下之前』的資料訓練，完全杜絕前視偏誤。
-
-輸出: figures/deep_04_walkforward.png, results/walkforward_metrics.md
+月頻模型的 walk-forward 驗證。
+單一切分容易靠運氣，這裡改成逐月往前、每次只用過去的資料重訓，是時間序該有的做法。
+輸出 figures/deep_04_walkforward.png、results/walkforward_metrics.md。
 """
 import os, json
 import numpy as np, pandas as pd
@@ -78,19 +74,17 @@ if __name__=="__main__":
     raw=json.load(open(RAW,encoding="utf-8"))
     d,X=build_frame(raw)
     r=walk_forward(d,X,init=60)
-    verdict=("**穩健**：walk-forward 下仍顯著優於擲硬幣，訊號可信度提高。" if r["binom_p"]<0.05 and r["dir_acc"]>0.55
-             else "**大幅縮水**：改用嚴謹的 walk-forward 後，優勢明顯下降——證明原本的 67% 有相當程度是單一切分的運氣，"
-                  "這正是為什麼要做 walk-forward。")
-    L=["# 月頻模型 — Walk-forward 驗證\n",
-       f"- 逐月擴張窗一步預測，測試 {r['n']} 個月(初始訓練窗 60 個月)",
-       f"- 方向準確率 **{r['dir_acc']*100:.1f}%**，binomial vs 50% p = **{r['binom_p']:.3f}**",
-       f"- RandomForest RMSE {r['rf_rmse']:.4f} vs 隨機漫步 {r['rw_rmse']:.4f}",
-       f"- Walk-forward 回測：策略 Sharpe **{r['strat_sharpe']:.2f}** (總報酬 {r['strat_total']*100:.1f}%) "
-       f"vs 買進持有 Sharpe {r['bh_sharpe']:.2f} ({r['bh_total']*100:.1f}%)",
+    verdict=("還是明顯比丟硬幣好，訊號的可信度反而更高。" if r["binom_p"]<0.05 and r["dir_acc"]>0.55
+             else "優勢明顯縮水，表示原本的 67% 有一部分是單一切分的運氣，這也是為什麼要做 walk-forward。")
+    L=["# 月頻模型的 walk-forward 驗證\n",
+       f"逐月往前、每次只用過去的資料重訓，測試 {r['n']} 個月，初始訓練窗 60 個月。",
+       f"方向準確率 {r['dir_acc']*100:.1f}%，跟 50% 的 binomial 檢定 p 值 {r['binom_p']:.3f}。",
+       f"RandomForest RMSE {r['rf_rmse']:.4f}，隨機漫步 {r['rw_rmse']:.4f}。",
+       f"回測策略 Sharpe {r['strat_sharpe']:.2f}（總報酬 {r['strat_total']*100:.1f}%），"
+       f"買進持有 Sharpe {r['bh_sharpe']:.2f}（{r['bh_total']*100:.1f}%）。",
        "",
        "## 結論",
-       f"對照單一70/30切分的 67.6%：{verdict}",
-       "\n這一步示範了時間序模型評估的正確做法，也體現對自己結果的懷疑精神——"
-       "與其宣稱高準確率，不如用最嚴格的方法檢驗它。\n"]
+       f"先前單一 70/30 切分是 67.6%，換成 walk-forward 之後，{verdict}"
+       "這是時間序模型該有的驗證方式，與其宣稱準確率多高，不如用最嚴格的方法檢驗一遍。\n"]
     open(f"{RES}/walkforward_metrics.md","w",encoding="utf-8").write("\n".join(L))
     print("\n".join(L)); print("saved -> figures/deep_04_walkforward.png")

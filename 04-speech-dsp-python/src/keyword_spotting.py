@@ -1,11 +1,7 @@
 """
-關鍵詞辨識 (Keyword spotting) — MFCC + DTW 模板比對
-========================================================
-用真實 wav 建立小型語音詞庫，對每段抽出「能量最高的核心片段」當模板，
-以 MFCC + 動態時間規整(DTW) 做辨識(one-shot，不需大量訓練資料)。
-以加噪/變速產生測試查詢，量測真實 top-1 辨識準確率與混淆矩陣。
-
-輸出: figures/deep_speech_04_kws.png, results/kws_metrics.md
+關鍵詞辨識，用 MFCC 加 DTW 做模板比對。
+每個詞取能量最高的一段當模板，靠加噪和變速產生測試查詢，算 top-1 準確率。
+每個詞只要一個範例，適合資料很少的情況。
 """
 import os, numpy as np
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -71,15 +67,13 @@ def main():
             if C[i,j]: ax.text(j,i,C[i,j],ha="center",va="center",
                                color="white" if C[i,j]>C.max()/2 else "black",fontsize=9)
     fig.colorbar(im); fig.tight_layout(); fig.savefig(f"{FIG}/deep_speech_04_kws.png",dpi=120); plt.close(fig)
-    L=["# Keyword spotting — MFCC + DTW\n",
-       f"- 詞庫(真實 wav): {', '.join(WORDS)}",
-       f"- 每詞取能量最高的 {WIN}s 核心片段為模板；測試查詢 = 3 SNR × 3 變速 = {len(conds)} 種/詞",
-       f"- **Top-1 辨識準確率 = {acc*100:.1f}%** (共 {C.sum()} 次查詢)",
+    L=["# 關鍵詞辨識（MFCC + DTW）\n",
+       f"詞庫用的是真實錄音：{', '.join(WORDS)}。",
+       f"每個詞取能量最高的 {WIN} 秒當模板，測試查詢是 3 種 SNR × 3 種變速，每詞 {len(conds)} 種，一共 {C.sum()} 次。",
+       f"Top-1 準確率 {acc*100:.1f}%。",
        "",
-       "## 解讀",
-       "MFCC 捕捉音色包絡、DTW 容忍語速伸縮，因此在加噪與變速下仍能辨識——"
-       "這是 one-shot(每詞僅一模板)的作法，適合資料稀少情境。",
-       "延伸：資料變多時可改用 CNN/RNN 端到端關鍵詞偵測(如 Google Speech Commands)。\n"]
+       "MFCC 抓的是音色的包絡，DTW 能容忍語速伸縮，所以加了雜訊和變速還是認得出來。"
+       "這是每個詞只有一個模板的做法，適合資料很少的情況。資料多了之後可以換成 CNN/RNN 的端到端關鍵詞偵測。\n"]
     open(f"{RES}/kws_metrics.md","w",encoding="utf-8").write("\n".join(L))
     print("\n".join(L)); print("saved -> figures/deep_speech_04_kws.png")
 
