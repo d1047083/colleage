@@ -8,3 +8,9 @@ GOPRO_Large/
 final/
 *.wav
 .DS_Store
+
+runs/
+*.pt
+_selftest*/
+dataset/images/
+dataset/labels/

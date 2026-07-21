@@ -50,6 +50,12 @@ PROJECTS = [
   ["OpenDRIVE","XML parsing","RoadRunner","Unity"],["road"],
   "真成果：解析你 RoadRunner 專案的實際地圖——138 條道路、10 個路口、167 條行車道、總長 4.63 km，"
   "並重建出含圓環與交叉路口的道路地圖。"),
+ ("06","YOLOv8 鹿種偵測","Deer Species Detection",
+  "用 <b>YOLOv8</b> 做鹿的物件偵測(框出並辨識種類)。完整訓練/推論/資料下載流程與 <b>Colab GPU 筆記本</b>，"
+  "訓練流程已用合成資料在本地驗證可運作。",
+  ["YOLOv8","ultralytics","PyTorch","Roboflow"],[],
+  "就緒可訓練：因作品集雲端無 GPU 且封鎖權重下載，訓練在你本機/Colab 執行；"
+  "已誠實說明公開資料多為單類別、真鹿種需 species 標註資料或自行標註。"),
 ]
 
 def card(p):

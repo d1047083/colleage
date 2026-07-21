@@ -1,0 +1,11 @@
+# YOLOv8 偵測資料設定範本
+# 若用 Roboflow 下載，會自動產生一份含正確 names 的 data.yaml，可直接用那份。
+path: .                 # 資料集根目錄
+train: images/train
+val: images/val
+# test: images/test     # 選配
+names:                  # 鹿種類別(依你的資料集調整)；單類別時只留 0: deer
+  0: sika_deer          # 梅花鹿
+  1: red_deer           # 馬鹿/紅鹿
+  2: sambar_deer        # 水鹿
+  3: muntjac            # 山羌
