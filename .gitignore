@@ -14,3 +14,5 @@ runs/
 _selftest*/
 dataset/images/
 dataset/labels/
+deer_yolo/
+demo_openimages/

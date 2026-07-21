@@ -6,9 +6,18 @@
 YOLOv8 訓練需要 GPU 且需下載預訓練權重/資料集。**本專案的訓練請在你本機(有 GPU)或 Google Colab 執行**
 (建置此專案的雲端沙箱無 GPU 且封鎖權重下載，僅用合成資料驗證過訓練流程可運作)。
 
+## ✅ 已實跑驗證的成果 (真實資料)
+`src/run_openimages_demo.py` 用 **Open Images「Deer」類別**(免 API key)下載真實鹿圖並微調 YOLOv8n，
+已在無 GPU 環境實際跑出：**mAP@0.5 = 0.772、Recall = 0.955**(120 訓練/40 驗證、CPU、10 epoch)。
+成果圖見 `figures/`(deer_detections / deer_train_curves / deer_confusion)、數據見 `results/openimages_metrics.md`。
+```bash
+pip install fiftyone ultralytics huggingface_hub
+python src/run_openimages_demo.py --epochs 30 --imgsz 640 --device 0   # 有GPU時
+```
+
 ## 最快路徑：Colab (免費 GPU)
-打開 `notebooks/train_deer_yolov8_colab.ipynb` → 執行階段設為 GPU → 由上而下執行即可
-(安裝 → 下載資料 → 訓練 → 評估 → 推論 → 下載權重)。
+打開 `notebooks/train_deer_yolov8_colab.ipynb` → 執行階段設為 GPU → 由上而下執行即可。
+資料集提供兩條路：**A. Open Images(免 API key，已驗證)** 或 **B. Roboflow(需 API key)**。
 
 ## 本機路徑
 ```bash

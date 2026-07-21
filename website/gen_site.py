@@ -16,6 +16,8 @@ FIG = {
  "speech_mfcc": b64("04-speech-dsp-python/figures/deep_speech_01_mfcc.png"),
  "road": b64("05-autonomous-sim/figures/deep_road_network.png"),
  "deblur": b64("02-cv-image-deblur/figures/deep_deblur_benchmark.png"),
+ "deer": b64("06-yolov8-deer-detection/figures/deer_detections.png"),
+ "deer_curves": b64("06-yolov8-deer-detection/figures/deer_train_curves.png"),
 }
 
 PROJECTS = [
@@ -50,12 +52,13 @@ PROJECTS = [
   ["OpenDRIVE","XML parsing","RoadRunner","Unity"],["road"],
   "真成果：解析你 RoadRunner 專案的實際地圖——138 條道路、10 個路口、167 條行車道、總長 4.63 km，"
   "並重建出含圓環與交叉路口的道路地圖。"),
- ("06","YOLOv8 鹿種偵測","Deer Species Detection",
-  "用 <b>YOLOv8</b> 做鹿的物件偵測(框出並辨識種類)。完整訓練/推論/資料下載流程與 <b>Colab GPU 筆記本</b>，"
-  "訓練流程已用合成資料在本地驗證可運作。",
-  ["YOLOv8","ultralytics","PyTorch","Roboflow"],[],
-  "就緒可訓練：因作品集雲端無 GPU 且封鎖權重下載，訓練在你本機/Colab 執行；"
-  "已誠實說明公開資料多為單類別、真鹿種需 species 標註資料或自行標註。"),
+ ("06","YOLOv8 鹿偵測","Deer Detection",
+  "用 <b>YOLOv8</b> 做鹿的物件偵測。以 <b>Open Images 真實鹿圖</b>微調(免 API key 可重現)，"
+  "另附完整訓練/推論流程與 <b>Colab GPU 筆記本</b>。",
+  ["YOLOv8","ultralytics","PyTorch","fiftyone"],["deer","deer_curves"],
+  "真成果：在無 GPU 環境用 120/40 張真實鹿圖微調，實跑得 <b>mAP@0.5 = 0.772、Recall = 0.955</b>；"
+  "偵測定位準確(見圖)。誠實標註：CPU 僅 10 epoch 故信心分數偏低，GPU 多跑幾輪會更好；"
+  "此為單類別，細分鹿種需 species 標註資料。"),
 ]
 
 def card(p):
