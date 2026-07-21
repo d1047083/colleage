@@ -1,8 +1,9 @@
-# 03 · 水果好壞影像分類 (Banana Freshness)
+# 03 · 水果好壞分類
 
-good/bad banana 影像的正規二元分類，採 **MobileNetV2 遷移學習**。
+拿 good/bad 的香蕉照片做二元分類，用 MobileNetV2 遷移學習。
 
 ```bash
-python src/train.py --data ../data --epochs 15   # data/ 下需有 good/ 與 bad/
+python src/train.py --data ../data --epochs 15   # data/ 底下要有 good/ 和 bad/ 兩個資料夾
 ```
-含資料增強、早停、混淆矩陣與分類報告。延伸：Grad-CAM 可解釋性、Flask/Gradio 網頁 Demo。
+
+程式裡有資料增強、早停、混淆矩陣和分類報告。之後可以加 Grad-CAM 看模型憑哪裡判斷，或包成 Flask/Gradio 的網頁 demo。

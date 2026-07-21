@@ -1,8 +1,7 @@
-# 05 · 自動駕駛場景模擬 (RoadRunner + Unity)
+# 05 · 自動駕駛場景
 
-用 MATLAB **RoadRunner** 建立道路場景(輸出 OpenDRIVE `.xodr`、`.fbx`、GeoJSON)，
-再匯入 **Unity** 建構可視化場景；另有三份製作簡報。
+原本是用 MATLAB RoadRunner 建的道路場景（輸出成 OpenDRIVE 的 .xodr、.fbx、GeoJSON），再匯進 Unity 做視覺化，另外有三份簡報。
 
-本專案以技術文件為主(模擬環境無法在此重跑)。
-延伸方向：Unity 中加入車輛+相機，串接專案 02 的視覺模型做車道/號誌辨識；
-或改用開源的 CARLA 模擬器程式化生成場景。詳見根目錄 ROADMAP.md。
+這次補的部分是用 Python 從頭解析 .xodr：讀出每條路的幾何（直線和圓弧），積分還原成座標，再把整張道路網畫出來。程式在 `src/opendrive_parser.py`。實際跑那份 RoadRunner 檔的結果是 138 條路、10 個路口、總長 4.63 公里。
+
+模擬環境本身沒辦法在這裡重跑，所以這個專案偏技術文件。之後可以在 Unity 裡放一台車加相機，接專案 02 的視覺模型做車道或號誌辨識，或換 CARLA 這類開源模擬器用程式生成場景。
