@@ -1,4 +1,4 @@
-# 林信廷 · 資料科學與 AI 作品集 (Data Science & AI Portfolio)
+ 資料科學與 AI 作品集 (Data Science & AI Portfolio)
 
 把大學時期的課程作業，系統性地升級為五個可執行、可展示的 side project。
 主軸涵蓋 **金融資料科學、電腦視覺、語音訊號處理、機器學習與模擬**。
