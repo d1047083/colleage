@@ -15,7 +15,7 @@
 | 03 | **水果好壞影像分類** | 香蕉 good/bad 用 MobileNetV2 遷移學習做正規二元分類 | TensorFlow/Keras | 🟡 可訓練骨架 |
 | 04 | **語音訊號分析** | 真實wav的MFCC/基頻 + ICA盲訊號分離(兩段人聲分離, 相關1.00) | NumPy, SciPy, librosa | ✅ 深化, 真成果 |
 | 05 | **自動駕駛場景模擬** | Python從零解析OpenDRIVE(.xodr), 重建道路網(138路/10路口/4.63km) | OpenDRIVE, XML | ✅ 深化, 真成果 |
-| 06 | **YOLOv8 鹿種偵測** | 物件偵測全流程(訓練/推論/Roboflow下載/Colab筆記本), 流程已本地驗證 | YOLOv8, ultralytics | ✅ 流程就緒(需GPU訓練) |
+| 06 | **YOLOv8 多鹿種偵測** | 辨識5鹿種(白尾/紅/梅花/黇/馴鹿), iNaturalist真實照片+自動標框, 已打包可本地跑 | YOLOv8, ultralytics | ✅ 實跑 mAP50=0.34 |
 
 ## 快速開始
 

@@ -1,0 +1,10 @@
+# 從 06-yolov8-deer-detection/ 目錄執行時可直接用此相對路徑
+path: species_data/deer_species_yolo
+train: images/train
+val: images/val
+names:
+  0: white_tailed_deer
+  1: red_deer
+  2: sika_deer
+  3: fallow_deer
+  4: reindeer

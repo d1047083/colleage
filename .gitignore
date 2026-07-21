@@ -16,3 +16,5 @@ dataset/images/
 dataset/labels/
 deer_yolo/
 demo_openimages/
+species_data/raw/
+06-yolov8-deer-detection/runs/

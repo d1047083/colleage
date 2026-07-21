@@ -1,44 +1,51 @@
-# 06 · YOLOv8 鹿種偵測 (Deer Species Detection)
+# 06 · YOLOv8 多鹿種偵測 (Deer **Species** Detection)
 
-用 YOLOv8 做鹿的**偵測**(框出每隻鹿並辨識種類)。接續自駕/電腦視覺主題，練習物件偵測全流程。
+用 YOLOv8 偵測並**辨識鹿的品種**（不只判斷「是不是鹿」）。目前 5 個鹿種：
+白尾鹿 (white_tailed_deer)、紅鹿 (red_deer)、梅花鹿 (sika_deer)、黇鹿 (fallow_deer)、馴鹿 (reindeer)。
 
-## ⚠️ 執行環境
-YOLOv8 訓練需要 GPU 且需下載預訓練權重/資料集。**本專案的訓練請在你本機(有 GPU)或 Google Colab 執行**
-(建置此專案的雲端沙箱無 GPU 且封鎖權重下載，僅用合成資料驗證過訓練流程可運作)。
+本專案是**打包好、可在本地端直接跑**的：已附真實照片資料集、訓練好的權重、與完整程式。
 
-## ✅ 已實跑驗證的成果 (真實資料)
-`src/run_openimages_demo.py` 用 **Open Images「Deer」類別**(免 API key)下載真實鹿圖並微調 YOLOv8n，
-已在無 GPU 環境實際跑出：**mAP@0.5 = 0.772、Recall = 0.955**(120 訓練/40 驗證、CPU、10 epoch)。
-成果圖見 `figures/`(deer_detections / deer_train_curves / deer_confusion)、數據見 `results/openimages_metrics.md`。
-```bash
-pip install fiftyone ultralytics huggingface_hub
-python src/run_openimages_demo.py --epochs 30 --imgsz 640 --device 0   # 有GPU時
+## 內容
+```
+06-yolov8-deer-detection/
+├─ species_data/deer_species_yolo/   # 225 張真實鹿照(來自 iNaturalist) + YOLO 標註 + data.yaml
+├─ weights/
+│   ├─ deer_species_best.pt          # 訓練好的多鹿種模型(可直接推論)
+│   └─ generic_deer_detector.pt      # 通用鹿偵測器(用於自動標框、擴充資料)
+├─ src/
+│   ├─ predict.py                    # 用權重對新圖偵測
+│   ├─ train.py                      # 訓練
+│   └─ build_species_dataset.py      # 從 iNaturalist 重建/擴充資料集(自動標框)
+├─ notebooks/train_deer_yolov8_colab.ipynb
+└─ results/species_metrics.md        # 實跑成果與誠實說明
 ```
 
-## 最快路徑：Colab (免費 GPU)
-打開 `notebooks/train_deer_yolov8_colab.ipynb` → 執行階段設為 GPU → 由上而下執行即可。
-資料集提供兩條路：**A. Open Images(免 API key，已驗證)** 或 **B. Roboflow(需 API key)**。
-
-## 本機路徑
+## 在本地端跑（三步）
 ```bash
-pip install ultralytics roboflow
-# 1) 下載資料(填入你的 Roboflow API key)
-python src/download_dataset.py
-# 2) 訓練
-python src/train.py --data ../dataset/data.yaml --model yolov8n.pt --epochs 100 --device 0
-# 3) 推論
-python src/predict.py --weights runs/detect/deer_yolov8n/weights/best.pt --source some_imgs/
+# 0) 安裝（建議有 NVIDIA GPU）
+pip install ultralytics fiftyone huggingface_hub
+
+# 1) 直接用附上的權重，對你的圖片偵測鹿種
+python src/predict.py --weights weights/deer_species_best.pt --source 你的圖片資料夾/ --conf 0.25 --device 0
+
+# 2) （可選）用附上的資料集自己重新訓練（在專案根目錄執行）
+python src/train.py --data species_data/deer_species_yolo/data.yaml \
+                    --model weights/deer_species_best.pt --epochs 100 --imgsz 640 --device 0
+
+# 3) （可選）擴充資料：每種抓更多張、自動標框，再重訓
+python src/build_species_dataset.py --per 200
 ```
 
-## 關於「鹿種」資料
-公開的 deer 偵測資料集多半是**單類別(deer)**。要做真正的**鹿種(species)**辨識，兩條路：
-1. 找 species 標註的資料集(Roboflow Universe 搜尋，注意 classes 是否含多種鹿)。
-2. 自行標註：用 Roboflow Annotate / LabelImg / CVAT 對你的鹿照片畫框標種類，匯出 YOLO 格式。
-   `dataset/data.yaml` 已給多鹿種(梅花鹿/紅鹿/水鹿/山羌)的 names 範本，依你的資料調整。
+## 目前成果（誠實）
+在無 GPU 環境用 225 張(180/45)、CPU 中途訓練得到 **mAP@0.5 ≈ 0.34**，能區分五個鹿種
+（見 `figures/deer_species_detections.png`，每種各一例；馴鹿最好認）。這是**弱監督**結果：
+bounding box 由自動標框產生、本身有雜訊，且資料量小。**要顯著提升**：
+1. 每種抓 200+ 張（`build_species_dataset.py --per 200`）
+2. 人工用 LabelImg/Roboflow 校正框與品種
+3. 用 GPU 跑 100~150 epoch、imgsz 640
 
-## 檔案
-- `src/train.py` 訓練 · `src/predict.py` 推論 · `src/download_dataset.py` Roboflow 下載
-- `dataset/data.yaml` 資料設定範本 · `notebooks/*.ipynb` Colab 一鍵訓練
+鹿種外觀相近（尤其雌鹿/幼鹿），比「是不是鹿」難很多，這是正常的難度。整條**物種級偵測流程**已打通，
+資料與算力補上去就能得到堪用模型。
 
-## 評估指標
-物件偵測看 **mAP50 / mAP50-95**、Precision/Recall 與混淆矩陣(YOLOv8 訓練後自動產生於 runs/)。
+## Colab（免費 GPU）
+`notebooks/train_deer_yolov8_colab.ipynb` 也可用；把資料改成本專案 species 版即可在 GPU 上快速訓練。

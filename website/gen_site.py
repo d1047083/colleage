@@ -16,8 +16,8 @@ FIG = {
  "speech_mfcc": b64("04-speech-dsp-python/figures/deep_speech_01_mfcc.png"),
  "road": b64("05-autonomous-sim/figures/deep_road_network.png"),
  "deblur": b64("02-cv-image-deblur/figures/deep_deblur_benchmark.png"),
- "deer": b64("06-yolov8-deer-detection/figures/deer_detections.png"),
- "deer_curves": b64("06-yolov8-deer-detection/figures/deer_train_curves.png"),
+ "deer": b64("06-yolov8-deer-detection/figures/deer_species_detections.png"),
+ "deer_curves": b64("06-yolov8-deer-detection/figures/deer_detections.png"),
 }
 
 PROJECTS = [
@@ -52,13 +52,13 @@ PROJECTS = [
   ["OpenDRIVE","XML parsing","RoadRunner","Unity"],["road"],
   "真成果：解析你 RoadRunner 專案的實際地圖——138 條道路、10 個路口、167 條行車道、總長 4.63 km，"
   "並重建出含圓環與交叉路口的道路地圖。"),
- ("06","YOLOv8 鹿偵測","Deer Detection",
-  "用 <b>YOLOv8</b> 做鹿的物件偵測。以 <b>Open Images 真實鹿圖</b>微調(免 API key 可重現)，"
-  "另附完整訓練/推論流程與 <b>Colab GPU 筆記本</b>。",
-  ["YOLOv8","ultralytics","PyTorch","fiftyone"],["deer","deer_curves"],
-  "真成果：在無 GPU 環境用 120/40 張真實鹿圖微調，實跑得 <b>mAP@0.5 = 0.772、Recall = 0.955</b>；"
-  "偵測定位準確(見圖)。誠實標註：CPU 僅 10 epoch 故信心分數偏低，GPU 多跑幾輪會更好；"
-  "此為單類別，細分鹿種需 species 標註資料。"),
+ ("06","YOLOv8 多鹿種偵測","Deer Species Detection",
+  "用 <b>YOLOv8</b> 偵測並<b>辨識鹿的品種</b>(白尾鹿/紅鹿/梅花鹿/黇鹿/馴鹿)。從 iNaturalist 真實照片"
+  "建資料集，用通用鹿偵測器自動標框(弱監督)，微調多類別模型。已打包成可本地端執行的完整專案。",
+  ["YOLOv8","ultralytics","iNaturalist","weak-supervision"],["deer","deer_curves"],
+  "真成果：5 鹿種、225 張真實照片，CPU 實跑得 <b>mAP@0.5 = 0.34</b>，能區分五個品種(見圖，每種一例)。"
+  "誠實標註：弱監督自動標框有雜訊、資料少故 mAP 不高——資料擴充+GPU 訓練可顯著提升；"
+  "另附單類別版(mAP50=0.77)作對照。"),
 ]
 
 def card(p):
