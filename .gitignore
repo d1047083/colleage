@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.vs/
+*.keras
+data/*.csv
+data/*.json
+GOPRO_Large/
+final/
+*.wav
+.DS_Store

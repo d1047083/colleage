@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+scipy
+scikit-image
+opencv-python
+# 深度學習專案(02 U-Net / 03 分類器)另需:
+# tensorflow
